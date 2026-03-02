@@ -226,6 +226,12 @@ importers:
         specifier: ^5.1.4
         version: 5.1.4(webpack-dev-server@5.2.2)(webpack@5.105.3)
 
+  libs/shared/ui:
+    dependencies:
+      '@angular/core':
+        specifier: ^21.1.0
+        version: 21.1.6(@angular/compiler@21.1.6)(rxjs@7.8.2)
+
 packages:
 
   '@algolia/abtesting@1.12.2':
