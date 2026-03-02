@@ -1,0 +1,18 @@
+if ! command -v node >/dev/null 2>&1; then
+  eval "$(fnm env --shell bash 2>/dev/null)" || true
+fi
+
+# Block sensitive files from being committed
+SENSITIVE=$(git diff --cached --name-only | grep -E '(^|/)\.env(\.[^.]+)?$|\.pem$|\.key$|\.p12$|\.pfx$' || true)
+if [ -n "$SENSITIVE" ]; then
+  echo ""
+  echo "❌ Sensitive file(s) detected in staged area:"
+  echo "$SENSITIVE" | sed 's/^/   /'
+  echo "   Remove them from staging and add to .gitignore"
+  echo ""
+  exit 1
+fi
+
+node scripts/validate-branch.cjs pre-commit
+pnpm nx affected -t lint
+pnpm nx affected -t test

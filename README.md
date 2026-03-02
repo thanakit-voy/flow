@@ -1,96 +1,196 @@
 # Flow
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+An Nx monorepo containing Angular micro-frontend applications and NestJS backend services.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## Project Structure
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-
-## Run tasks
-
-To run tasks with Nx use:
-
-```sh
-npx nx <target> <project-name>
+```
+flow/
+├── apps/
+│   ├── frontend/
+│   │   ├── shell/          Angular host app (Module Federation) — port 4200
+│   │   └── dashboard/      Angular remote app                  — port 4201
+│   └── backend/
+│       ├── api-gateway/    NestJS API Gateway                  — port 3000
+│       └── user-service/   NestJS User Service                 — port 3001
+└── libs/
+    └── shared/
+        ├── ui/             Angular UI component library
+        ├── data-access/    Data access library
+        └── util/           Utility library
 ```
 
-For example:
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) >= 18
+- [pnpm](https://pnpm.io/) >= 8
 
 ```sh
-npx nx build myproject
+npm install -g pnpm
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+## Setup
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
-```
-
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
+Install dependencies:
 
 ```sh
-# Generate an app
-npx nx g @nx/react:app demo
-
-# Generate a library
-npx nx g @nx/react:lib some-lib
+pnpm install
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+## Running the Applications
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Frontend (Angular + Module Federation)
 
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
+Run the shell host and dashboard remote together:
 
 ```sh
-npx nx connect
+pnpm nx serve shell
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+The shell will automatically start the dashboard remote as a dependency.
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+| App       | URL                   |
+|-----------|-----------------------|
+| Shell     | http://localhost:4200 |
+| Dashboard | http://localhost:4201 |
 
-### Step 2
+### Backend (NestJS)
 
-Use the following command to configure a CI workflow for your workspace:
+Run each service individually:
 
 ```sh
-npx nx g ci-workflow
+# API Gateway — http://localhost:3000/api
+pnpm nx serve api-gateway
+
+# User Service — http://localhost:3001/users
+pnpm nx serve user-service
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Run Everything
 
-## Install Nx Console
+```sh
+pnpm nx run-many -t serve --all --parallel
+```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+## Testing
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Run unit tests for all projects:
 
-## Useful links
+```sh
+pnpm nx run-many -t test --all
+```
 
-Learn more:
+Run tests for a specific project:
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```sh
+pnpm nx test api-gateway
+pnpm nx test shell
+```
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Run E2E tests:
+
+```sh
+pnpm nx e2e api-gateway-e2e
+pnpm nx e2e shell-e2e
+```
+
+## Building
+
+Build all projects:
+
+```sh
+pnpm nx run-many -t build --all
+```
+
+Build a specific project:
+
+```sh
+pnpm nx build shell
+pnpm nx build api-gateway
+```
+
+## Linting
+
+```sh
+pnpm nx run-many -t lint --all
+```
+
+## Git Workflow
+
+### Branch Naming
+
+Branches must follow this pattern:
+
+| Pattern | Example | Use case |
+|---------|---------|----------|
+| `feature/*` | `feature/add-login` | New features |
+| `bugfix/*` | `bugfix/fix-auth-token` | Bug fixes |
+| `hotfix/*` | `hotfix/critical-crash` | Urgent production fixes |
+| `release/*` | `release/1.2.0` | Release preparation |
+| `develop` | `develop` | Integration branch |
+
+Direct commits and pushes to `main` / `master` are blocked.
+
+### Commit Message Format
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer]
+```
+
+**Types:**
+
+| Type | Description |
+|------|-------------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation changes |
+| `style` | Formatting, no logic change |
+| `refactor` | Code refactoring |
+| `perf` | Performance improvement |
+| `test` | Adding or updating tests |
+| `chore` | Maintenance tasks |
+| `ci` | CI/CD configuration |
+| `build` | Build system changes |
+| `revert` | Reverting a commit |
+
+**Scopes** (optional, must match project name):
+
+`api-gateway` · `user-service` · `shell` · `dashboard` · `ui` · `data-access` · `util` · `workspace` · `deps` · `ci`
+
+**Examples:**
+
+```
+feat(api-gateway): add user authentication endpoint
+fix(shell): resolve lazy loading issue on dashboard route
+chore(deps): upgrade angular to 21.2.0
+docs(workspace): update README setup instructions
+refactor(ui): simplify button component props
+```
+
+### Git Hooks (Husky)
+
+Hooks run automatically — no manual setup needed after `pnpm install`.
+
+| Hook | Checks |
+|------|--------|
+| `commit-msg` | Validate commit message format (commitlint) |
+| `pre-commit` | Block sensitive files (`.env`, `.pem`, `.key`) · Validate branch name · Lint · Test (affected only) |
+| `pre-push` | Validate branch name · Build (affected only) |
+| `pre-rebase` | Block rebase on protected branches |
+| `pre-merge-commit` | Block direct merge into protected branches |
+
+## Useful Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm nx graph` | Visualize project dependency graph |
+| `pnpm nx affected -t test` | Run tests only on affected projects |
+| `pnpm nx affected -t build` | Build only affected projects |
+| `pnpm nx affected -t lint` | Lint only affected projects |
+| `pnpm nx list` | List all installed Nx plugins |

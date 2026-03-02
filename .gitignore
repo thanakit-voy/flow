@@ -38,5 +38,37 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Environment variables
+.env
+.env.*
+!.env.example
+!.env.docker.example
+
 .nx/cache
 .nx/workspace-data
+
+.angular
+
+# Playwright / E2E outputs
+test-results/
+playwright-report/
+
+/generated/prisma
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# pnpm
+pnpm-debug.log*
+.pnpm-store/
+
+# Playwright blob reporter
+blob-report/
+
+# Editor swap files
+*.swp
+*.swo
+*~
+
+# Temporary files
+vitest.config.*.timestamp*
