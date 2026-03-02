@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/data-access/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["type:data-access", "scope:shared"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
