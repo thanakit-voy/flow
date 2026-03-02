@@ -1,0 +1,6 @@
+if ! command -v node >/dev/null 2>&1; then
+  eval "$(fnm env --shell bash 2>/dev/null)" || true
+fi
+
+node scripts/validate-branch.cjs pre-merge-commit
+
