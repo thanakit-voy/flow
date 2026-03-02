@@ -6,7 +6,7 @@
  * - pre-merge-commit: block merge commit on protected branch
  * - pre-commit: block direct commit on protected branch
  *
- * Branch naming: feature/*, bugfix/*, hotfix/*, release/*, develop, main, master
+ * Branch naming: feature/*, bugfix/*, hotfix/*, release/*, develop, staging, main, master
  */
 
 const { execSync } = require('child_process');
@@ -65,7 +65,7 @@ function run(mode) {
             if (!isAllowedBranchName(remoteBranch)) {
               fail(
                 `\n❌ Branch name "${remoteBranch}" does not match the required pattern.\n` +
-                  `   Allowed: main, master, develop, feature/*, bugfix/*, hotfix/*, release/*\n`
+                  `   Allowed: main, master, develop, staging, feature/*, bugfix/*, hotfix/*, release/*\n`
               );
             }
           }
@@ -108,7 +108,7 @@ function run(mode) {
       if (!isAllowedBranchName(branch)) {
         fail(
           `\n❌ Branch name "${branch}" does not match the required pattern.\n` +
-            `   Allowed: main, master, develop, feature/*, bugfix/*, hotfix/*, release/*\n`
+            `   Allowed: main, master, develop, staging, feature/*, bugfix/*, hotfix/*, release/*\n`
         );
       }
       break;
