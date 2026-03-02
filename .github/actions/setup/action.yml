@@ -1,0 +1,43 @@
+name: Setup
+description: Checkout, install pnpm/Node, install dependencies, and set NX base/head SHAs
+
+inputs:
+  pnpm-version:
+    description: pnpm version to install
+    required: false
+    default: '9'
+  node-version:
+    description: Node.js version to use
+    required: false
+    default: '22'
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.pnpm-version }}
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+
+    - run: pnpm install --frozen-lockfile
+      shell: bash
+
+    - name: Set NX base/head
+      shell: bash
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          echo "NX_BASE=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_ENV"
+        elif [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+          echo "NX_BASE=${{ github.event.before }}" >> "$GITHUB_ENV"
+        else
+          echo "NX_BASE=HEAD~1" >> "$GITHUB_ENV"
+        fi
+        echo "NX_HEAD=HEAD" >> "$GITHUB_ENV"
